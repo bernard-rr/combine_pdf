@@ -1,5 +1,7 @@
 import streamlit as st
 from PyPDF2 import PdfFileMerger
+import os
+import zipfile
 
 def merge_pdfs(pdf_list):
     merger = PdfFileMerger()
@@ -29,8 +31,18 @@ def main():
         with open(output_pdf, "wb") as output:
             merger.write(output)
 
-        st.success("PDFs successfully combined. Click the link below to download the combined PDF:")
-        st.markdown(f"[Download Combined PDF]({output_pdf})")
+        # Create a zip folder and add the combined PDF to it
+        zip_folder = "combined_pdfs.zip"
+        with zipfile.ZipFile(zip_folder, 'w') as zip_file:
+            zip_file.write(output_pdf)
+
+        st.success("PDFs successfully combined. Click the link below to download the combined PDFs as a zip folder:")
+        with open(zip_folder, "rb") as zip_file:
+            st.download_button("Download Combined PDFs", data=zip_file, file_name=zip_folder, mime="application/zip")
+
+        # Remove the temporary files
+        os.remove(output_pdf)
+        os.remove(zip_folder)
 
 if __name__ == "__main__":
     main()
