@@ -1,8 +1,8 @@
 import streamlit as st
-import PyPDF2
+from PyPDF2 import PdfFileMerger
 
 def merge_pdfs(pdf_list):
-    merger = PyPDF2.PdfMerger()
+    merger = PdfFileMerger()
     for pdf_file in pdf_list:
         merger.append(pdf_file)
     return merger
@@ -14,6 +14,13 @@ def main():
     uploaded_files = st.file_uploader("Choose PDF files to combine", type=["pdf"], accept_multiple_files=True)
 
     if uploaded_files:
+        total_file_size = sum(file.size for file in uploaded_files)
+        max_file_size = 50 * 1024 * 1024  # 50 MB (adjust this as needed)
+
+        if total_file_size > max_file_size:
+            st.error(f"Total file size exceeds the maximum limit of {max_file_size / (1024 * 1024)} MB.")
+            return
+
         pdf_list = [pdf_file for pdf_file in uploaded_files]
         merger = merge_pdfs(pdf_list)
 
