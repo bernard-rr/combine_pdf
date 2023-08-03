@@ -2,12 +2,20 @@ import streamlit as st
 from PyPDF2 import PdfFileMerger
 import os
 import zipfile
+import base64
 
 def merge_pdfs(pdf_list):
     merger = PdfFileMerger()
     for pdf_file in pdf_list:
         merger.append(pdf_file)
     return merger
+
+def get_binary_file_downloader_html(bin_file, file_label='File'):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    bin_str = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{bin_str}" download="{os.path.basename(bin_file)}">{file_label}</a>'
+    return href
 
 def main():
     st.title("PDF Combiner App")
@@ -36,8 +44,8 @@ def main():
         with zipfile.ZipFile(zip_folder, 'w') as zip_file:
             zip_file.write(output_pdf)
 
-        st.success("PDFs successfully combined. Click the button below to download the combined PDFs as a zip folder:")
-        st.download_button("Download Combined PDFs", data=open(zip_folder, 'rb'), file_name=zip_folder, mime="application/zip")
+        st.success("PDFs successfully combined. Click the link below to download the combined PDFs as a zip folder:")
+        st.markdown(get_binary_file_downloader_html(zip_folder, 'Download Combined PDFs'), unsafe_allow_html=True)
 
         # Remove the temporary files
         os.remove(output_pdf)
