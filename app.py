@@ -36,8 +36,8 @@ def main():
         with zipfile.ZipFile(zip_folder, 'w') as zip_file:
             zip_file.write(output_pdf)
 
-        st.success("PDFs successfully combined. Click the link below to download the combined PDFs as a zip folder:")
-        st.markdown(get_binary_file_downloader_html(zip_folder), unsafe_allow_html=True)
+        st.success("PDFs successfully combined. Click the button below to download the combined PDFs as a zip folder:")
+        st.download_button("Download Combined PDFs", data=open(zip_folder, 'rb'), file_name=zip_folder, mime="application/zip")
 
         # Remove the temporary files
         os.remove(output_pdf)
