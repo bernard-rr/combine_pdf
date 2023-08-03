@@ -39,6 +39,10 @@ streamlit run pdf_combiner_app.py
 
 - The maximum allowed file size for combined PDFs is set to 50 MB. If your files exceed this limit, you may need to split them into smaller segments or optimize the PDFs before combining.
 
+- ## License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
 
 ## Contributions
 
